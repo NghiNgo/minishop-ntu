@@ -2,9 +2,9 @@
 
 Ứng dụng web mẫu dùng xuyên suốt 6 buổi thực hành học phần **Kiểm thử phần mềm (SOT357)**, Khoa Công nghệ Thông tin, Trường Đại học Nha Trang.
 
-> ⚠️ Đây là ứng dụng **dạy học**. Hệ thống **có chủ đích chứa lỗi** để sinh viên luyện tập phát hiện. Không sử dụng cho mục đích thực tế.
+> Đây là ứng dụng **dạy học**. Hệ thống **có chủ đích chứa lỗi** để sinh viên luyện tập phát hiện. Không sử dụng cho mục đích thực tế.
 
-> 📤 **Nộp bài:** mọi bài thực hành được nộp bằng Pull Request, xem [`docs/HuongDanNopBai-PullRequest.md`](docs/HuongDanNopBai-PullRequest.md).
+> **Nộp bài:** mọi bài thực hành được nộp bằng Pull Request, xem [`docs/HuongDanNopBai-PullRequest.md`](docs/HuongDanNopBai-PullRequest.md).
 
 ## 1. Yêu cầu phần mềm
 

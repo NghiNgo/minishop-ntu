@@ -4,7 +4,7 @@
  * Có thể chạy thử trên máy:  NHANH=buoi-01 NHANH_GOC=main node scripts/kiem-tra-nop-bai.js
  *
  * Kiểm tra 3 việc:
- *   1. Tên nhánh đúng quy ước (buoi-XX hoặc buoi-XX-nhom)
+ *   1. Tên nhánh đúng quy ước (buoi-XX)
  *   2. Chỉ sửa các file được phép, và đã điền các file bắt buộc
  *   3. Các lệnh kiểm tra (ví dụ ESLint) chạy thành công
  */

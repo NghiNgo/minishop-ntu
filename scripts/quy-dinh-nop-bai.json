@@ -1,23 +1,50 @@
 {
-  "_ghiChu": "Quy định nộp bài theo từng nhánh. Tên nhánh = khóa. Giảng viên bổ sung mục mới cho các buổi sau.",
+  "_ghiChu": "Quy định nộp bài theo từng nhánh. Tên nhánh = khóa. Mọi bài thực hành đều là bài cá nhân.",
   "buoi-01": {
-    "moTa": "Buổi 1 – Phần 1, 2, 3 (bài cá nhân)",
+    "moTa": "Buổi 1 – Kiểm thử tĩnh (bài cá nhân)",
     "duocSua": [
       "bai-nop/Buoi01-Phan1-KhamPha.md",
-      "bai-nop/Buoi01-Phan2-BienBanReview.md",
+      "bai-nop/Buoi01-Phan2-PhieuReview.md",
       "bai-nop/Buoi01-Phan3-PhanTichTinh.md",
       "bai-nop/hinh/",
       "src/lab-static/orderUtils.js"
     ],
     "batBuocDien": [
       "bai-nop/Buoi01-Phan1-KhamPha.md",
-      "bai-nop/Buoi01-Phan2-BienBanReview.md",
+      "bai-nop/Buoi01-Phan2-PhieuReview.md",
       "bai-nop/Buoi01-Phan3-PhanTichTinh.md"
     ],
     "lenhKiemTra": [
       {
         "ten": "ESLint Phần 3 (npm run lint:lab)",
         "lenh": "npm run lint:lab"
+      }
+    ]
+  },
+  "buoi-02": {
+    "moTa": "Buổi 2 – Thiết kế ca kiểm thử hộp đen (bài cá nhân)",
+    "duocSua": [
+      "bai-nop/Buoi02-TestCase.csv",
+      "bai-nop/Buoi02-DuLieuKiemThu.csv",
+      "bai-nop/Buoi02-PhanHoach.md",
+      "bai-nop/Buoi02-BangQuyetDinh.md",
+      "bai-nop/Buoi02-SoDoTrangThai.md",
+      "bai-nop/Buoi02-ThucThi-RTM.md",
+      "bai-nop/Buoi02-Pairwise.md",
+      "bai-nop/hinh/"
+    ],
+    "batBuocDien": [
+      "bai-nop/Buoi02-TestCase.csv",
+      "bai-nop/Buoi02-DuLieuKiemThu.csv",
+      "bai-nop/Buoi02-PhanHoach.md",
+      "bai-nop/Buoi02-BangQuyetDinh.md",
+      "bai-nop/Buoi02-SoDoTrangThai.md",
+      "bai-nop/Buoi02-ThucThi-RTM.md"
+    ],
+    "lenhKiemTra": [
+      {
+        "ten": "Kiểm tra bộ ca kiểm thử Buổi 2",
+        "lenh": "node scripts/kiem-tra-csv.js"
       }
     ]
   }
