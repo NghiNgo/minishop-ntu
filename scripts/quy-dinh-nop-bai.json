@@ -47,5 +47,29 @@
         "lenh": "node scripts/kiem-tra-csv.js"
       }
     ]
+  },
+  "buoi-03": {
+    "moTa": "Buổi 3 – Kiểm thử đơn vị và bao phủ mã nguồn (bài cá nhân)",
+    "duocSua": [
+      "tests/unit/du-lieu-csv.test.js",
+      "tests/unit/do-phu.test.js",
+      "tests/unit/auth-mock.test.js",
+      "bai-nop/Buoi03-PhanTichKetQua.md",
+      "bai-nop/Buoi03-DoPhu.md",
+      "bai-nop/hinh/"
+    ],
+    "batBuocDien": [
+      "tests/unit/du-lieu-csv.test.js",
+      "tests/unit/do-phu.test.js",
+      "tests/unit/auth-mock.test.js",
+      "bai-nop/Buoi03-PhanTichKetQua.md",
+      "bai-nop/Buoi03-DoPhu.md"
+    ],
+    "lenhKiemTra": [
+      {
+        "ten": "Kiểm tra bài nộp Buổi 3",
+        "lenh": "node scripts/kiem-tra-buoi03.js"
+      }
+    ]
   }
 }
