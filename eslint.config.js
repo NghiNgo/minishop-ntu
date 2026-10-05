@@ -20,6 +20,17 @@ module.exports = [
     },
   },
   {
+    // Các file kiểm thử dùng biến toàn cục của Jest (describe, test, expect…)
+    files: ['tests/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.jest },
+    },
+    rules: {
+      // Trong khung bài, một số import chưa dùng tới cho đến khi sinh viên hoàn thành TODO
+      'no-unused-vars': 'warn',
+    },
+  },
+  {
     // Riêng thư mục bài tập phân tích tĩnh: thêm các quy tắc cảnh báo "code smell"
     files: ['src/lab-static/**/*.js'],
     rules: {
