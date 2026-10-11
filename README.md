@@ -1,5 +1,7 @@
 # MiniShop NTU
 
+**Phiên bản hiện tại: 1.1.0** — xem `docs/GhiChuPhatHanh-v1.1.md`. Tài liệu yêu cầu áp dụng: `docs/SRS-MiniShop-v1.2.md`.
+
 Ứng dụng web mẫu dùng xuyên suốt 6 buổi thực hành học phần **Kiểm thử phần mềm (SOT357)**, Khoa Công nghệ Thông tin, Trường Đại học Nha Trang.
 
 > Đây là ứng dụng **dạy học**. Hệ thống **có chủ đích chứa lỗi** để sinh viên luyện tập phát hiện. Không sử dụng cho mục đích thực tế.
@@ -50,6 +52,9 @@ Dữ liệu lưu trong bộ nhớ: **khởi động lại server là mọi dữ 
 | `npm start` | Chạy ứng dụng ở cổng 3000 |
 | `npm run lint` | Phân tích tĩnh toàn bộ dự án bằng ESLint |
 | `npm run lint:lab` | Phân tích tĩnh riêng thư mục bài tập `src/lab-static` |
+| `npm test` | Chạy toàn bộ ca kiểm thử đơn vị (Jest) |
+| `npm run coverage` | Chạy kiểm thử kèm đo bao phủ, báo cáo ở `coverage/lcov-report/index.html` |
+| `npm run test:watch` | Tự chạy lại mỗi khi lưu file |
 
 Đổi cổng khi cổng 3000 bị chiếm:
 - Command Prompt: `set PORT=3001 && npm start`
@@ -64,6 +69,10 @@ minishop-ntu/
 ├── docs/                  Tài liệu: SRS, đề bài từng buổi, hướng dẫn nộp bài
 ├── bai-nop/               Mẫu bài nộp (sinh viên điền vào)
 ├── scripts/               Script kiểm tra bài nộp (không sửa)
+├── tests/
+│   ├── vi-du/             Ví dụ minh họa Jest (không sửa)
+│   ├── helpers/           Tiện ích đọc dữ liệu kiểm thử (không sửa)
+│   └── unit/              Ca kiểm thử đơn vị do sinh viên viết
 ├── public/                Giao diện web (HTML, CSS, JS)
 ├── src/
 │   ├── server.js          Máy chủ Express + REST API
@@ -79,7 +88,7 @@ minishop-ntu/
 | Phương thức | Đường dẫn | Mô tả | Cần đăng nhập |
 |---|---|---|---|
 | GET | `/api/health` | Kiểm tra trạng thái | Không |
-| GET | `/api/products` | Danh sách sản phẩm | Không |
+| GET | `/api/products` | Danh sách sản phẩm; hỗ trợ lọc qua tham số `tuKhoa`, `danhMuc`, `khoangGia`, `sapXep`, `conHang` (FR-06) | Không |
 | POST | `/api/register` | Đăng ký `{fullName, email, age, password}` | Không |
 | POST | `/api/login` | Đăng nhập `{email, password}` → trả về `token` | Không |
 | GET | `/api/cart` | Xem giỏ hàng | Có |

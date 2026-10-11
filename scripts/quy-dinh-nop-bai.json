@@ -54,6 +54,7 @@
       "tests/unit/du-lieu-csv.test.js",
       "tests/unit/do-phu.test.js",
       "tests/unit/auth-mock.test.js",
+      "bai-nop/Buoi02-DuLieuKiemThu.csv",
       "bai-nop/Buoi03-PhanTichKetQua.md",
       "bai-nop/Buoi03-DoPhu.md",
       "bai-nop/hinh/"
@@ -69,6 +70,31 @@
       {
         "ten": "Kiểm tra bài nộp Buổi 3",
         "lenh": "node scripts/kiem-tra-buoi03.js"
+      }
+    ]
+  },
+  "buoi-04": {
+    "moTa": "Buổi 4 – Kiểm thử xác nhận, hồi quy và quản lý lỗi (bài cá nhân)",
+    "duocSua": [
+      "bai-nop/Buoi04-TestPlan.md",
+      "bai-nop/Buoi04-XacNhan-HoiQuy.md",
+      "bai-nop/Buoi04-Exploratory.md",
+      "bai-nop/Buoi04-Pairwise.md",
+      "bai-nop/hinh/",
+      "tests/unit/du-lieu-csv.test.js",
+      "tests/unit/do-phu.test.js",
+      "tests/unit/auth-mock.test.js",
+      "bai-nop/Buoi02-DuLieuKiemThu.csv"
+    ],
+    "batBuocDien": [
+      "bai-nop/Buoi04-TestPlan.md",
+      "bai-nop/Buoi04-XacNhan-HoiQuy.md",
+      "bai-nop/Buoi04-Exploratory.md"
+    ],
+    "lenhKiemTra": [
+      {
+        "ten": "Kiểm tra bài nộp Buổi 4",
+        "lenh": "node scripts/kiem-tra-buoi04.js"
       }
     ]
   }

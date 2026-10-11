@@ -28,12 +28,35 @@ function requireLogin(req, res, next) {
 }
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', app: 'MiniShop NTU', version: '1.0.0' });
+  res.json({ status: 'ok', app: 'MiniShop NTU', version: '1.1.0' });
 });
 
 app.get('/api/products', (req, res) => {
+  const { tuKhoa, danhMuc, khoangGia, sapXep, conHang } = req.query;
+  let ketQua = store.products.slice();
+
+  if (tuKhoa) {
+    const k = String(tuKhoa).toLowerCase();
+    ketQua = ketQua.filter((p) => p.name.toLowerCase().includes(k));
+  }
+  if (danhMuc && danhMuc !== 'tat-ca') {
+    ketQua = ketQua.filter((p) => p.category === danhMuc);
+  }
+  if (conHang === 'co') {
+    ketQua = ketQua.filter((p) => p.stock >= 0);
+  }
+  if (khoangGia === 'duoi-100k') ketQua = ketQua.filter((p) => p.price < 100000);
+  else if (khoangGia === '100k-300k') ketQua = ketQua.filter((p) => p.price >= 100000 && p.price <= 300000);
+  else if (khoangGia === 'tren-300k') ketQua = ketQua.filter((p) => p.price > 300000);
+
+  if (sapXep === 'gia-tang' || sapXep === 'gia-giam') {
+    ketQua.sort((a, b) => a.price - b.price);
+  } else if (sapXep === 'moi-nhat') {
+    ketQua.sort((a, b) => b.id - a.id);
+  }
+
   const delay = 100 + Math.floor(Math.random() * 1400);
-  setTimeout(() => res.json(store.products), delay);
+  setTimeout(() => res.json(ketQua), delay);
 });
 
 app.post('/api/register', (req, res) => {
@@ -84,6 +107,7 @@ app.post('/api/orders', requireLogin, (req, res) => {
   if (detail.items.length === 0) {
     return res.status(400).json({ message: 'Giỏ hàng đang trống' });
   }
+  const discount = req.user.type === 'VIP' ? Math.round(detail.subtotal * 0.05) : 0;
   let fee;
   try {
     fee = calcShippingFee({ subtotal: detail.subtotal, zone, customerType: req.user.type });
@@ -95,8 +119,9 @@ app.post('/api/orders', requireLogin, (req, res) => {
     email: req.user.email,
     items: detail.items,
     subtotal: detail.subtotal,
+    discount,
     shippingFee: fee,
-    total: detail.subtotal + fee,
+    total: detail.subtotal - discount,
     status: 'CHO_XAC_NHAN',
   };
   store.orders.push(order);
@@ -109,9 +134,15 @@ app.get('/api/orders', requireLogin, (req, res) => {
 });
 
 app.delete('/api/orders/:id', requireLogin, (req, res) => {
-  const order = store.orders.find((o) => o.id === Number(req.params.id) && o.email === req.user.email);
+  const order = store.orders.find((o) => o.id === Number(req.params.id));
+  if (!order) {
+    return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+  }
+  if (order.status !== 'CHO_XAC_NHAN') {
+    return res.status(409).json({ message: 'Chỉ hủy được đơn ở trạng thái Chờ xác nhận' });
+  }
   order.status = 'DA_HUY';
-  res.json(order);
+  return res.json(order);
 });
 
 const PORT = Number(process.env.PORT) || 3000;

@@ -1,11 +1,13 @@
 // Nghiệp vụ giỏ hàng - xem SRS mục FR-03
+// Phiên bản 1.1: chặn số lượng 0, kiểm tra sản phẩm tồn tại, giới hạn tổng số lượng.
 const store = require('../data/store');
 
 const MAX_QTY = 99;
+const MAX_TOTAL_QTY = 200;
 
 function validateQuantity(qty) {
   const n = Number(qty);
-  return Number.isInteger(n) && n >= 0 && n <= MAX_QTY;
+  return Number.isInteger(n) && n >= 1 && n <= MAX_QTY;
 }
 
 function getCart(email) {
@@ -31,9 +33,23 @@ function cartDetail(email) {
   return { items, subtotal };
 }
 
+function tongSoLuong(email) {
+  return getCart(email).reduce((sum, l) => sum + l.qty, 0);
+}
+
 function addToCart(email, productId, qty) {
   if (!validateQuantity(qty)) {
     return { ok: false, status: 400, message: 'Số lượng phải là số nguyên từ 1 đến 99' };
+  }
+  if (!store.findProduct(productId)) {
+    return { ok: false, status: 404, message: 'Sản phẩm không tồn tại' };
+  }
+  if (tongSoLuong(email) + Number(qty) > MAX_TOTAL_QTY) {
+    return {
+      ok: false,
+      status: 400,
+      message: `Tổng số lượng sản phẩm trong giỏ không được vượt quá ${MAX_TOTAL_QTY}`,
+    };
   }
   const cart = getCart(email);
   const line = cart.find((l) => l.productId === Number(productId));
@@ -59,4 +75,13 @@ function clearCart(email) {
   store.carts[email] = [];
 }
 
-module.exports = { validateQuantity, addToCart, removeFromCart, cartDetail, clearCart, MAX_QTY };
+module.exports = {
+  validateQuantity,
+  addToCart,
+  removeFromCart,
+  cartDetail,
+  clearCart,
+  tongSoLuong,
+  MAX_QTY,
+  MAX_TOTAL_QTY,
+};

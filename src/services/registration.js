@@ -1,7 +1,10 @@
 // Nghiệp vụ đăng ký tài khoản - xem SRS mục FR-01
+// Phiên bản 1.1: đã siết lại kiểm tra tuổi và bổ sung kiểm tra thành phần mật khẩu.
 const store = require('../data/store');
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_AGE = 18;
+const MAX_AGE = 100;
 
 function validateRegistration({ fullName, email, age, password } = {}) {
   const errors = [];
@@ -17,13 +20,15 @@ function validateRegistration({ fullName, email, age, password } = {}) {
   const ageNumber = Number(age);
   if (!Number.isInteger(ageNumber)) {
     errors.push('Tuổi phải là số nguyên');
-  } else if (ageNumber < 17 || ageNumber > 100) {
+  } else if (ageNumber < MIN_AGE || ageNumber > MAX_AGE) {
     errors.push('Tuổi không nằm trong phạm vi cho phép');
   }
 
   const pwd = String(password || '');
-  if (pwd.length < 8 || pwd.length > 21) {
+  if (pwd.length <= 8 || pwd.length > 20) {
     errors.push('Mật khẩu phải có từ 8 đến 20 ký tự');
+  } else if (!/[a-z]/.test(pwd) || !/\d/.test(pwd)) {
+    errors.push('Mật khẩu phải có ít nhất một chữ cái và một chữ số');
   }
 
   return errors;
@@ -50,4 +55,4 @@ function register(data = {}) {
   return { ok: true, status: 201, message: 'Đăng ký thành công' };
 }
 
-module.exports = { validateRegistration, register };
+module.exports = { validateRegistration, register, MIN_AGE, MAX_AGE };
