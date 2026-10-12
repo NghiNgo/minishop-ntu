@@ -35,6 +35,37 @@
 
     <section class="card wide" id="product-section">
       <h2>Sản phẩm</h2>
+      <div class="filter-bar">
+        <label>Từ khóa <input id="f-tukhoa" data-testid="f-tukhoa" type="text" placeholder="Nhập tên sản phẩm"></label>
+        <label>Danh mục
+          <select id="f-danhmuc" data-testid="f-danhmuc">
+            <option value="tat-ca">Tất cả</option>
+            <option value="qua-luu-niem">Quà lưu niệm</option>
+            <option value="do-dung-hoc-tap">Đồ dùng học tập</option>
+          </select>
+        </label>
+        <label>Khoảng giá
+          <select id="f-khoanggia" data-testid="f-khoanggia">
+            <option value="">Tất cả</option>
+            <option value="duoi-100k">Dưới 100.000đ</option>
+            <option value="100k-300k">100.000đ – 300.000đ</option>
+            <option value="tren-300k">Trên 300.000đ</option>
+          </select>
+        </label>
+        <label>Sắp xếp
+          <select id="f-sapxep" data-testid="f-sapxep">
+            <option value="">Mặc định</option>
+            <option value="gia-tang">Giá tăng dần</option>
+            <option value="gia-giam">Giá giảm dần</option>
+            <option value="moi-nhat">Mới nhất</option>
+          </select>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="f-conhang" data-testid="f-conhang"> Chỉ hiện sản phẩm còn hàng
+        </label>
+        <button id="btn-loc" data-testid="btn-loc">Lọc</button>
+        <button id="btn-xoabo-loc" data-testid="btn-xoabo-loc">Xóa bộ lọc</button>
+      </div>
       <div id="product-list" data-testid="product-list">Đang tải...</div>
     </section>
 

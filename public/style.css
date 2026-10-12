@@ -19,3 +19,11 @@ button:hover { background: #083a66; }
 table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
 th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e4e7eb; font-size: .92rem; }
 td input { width: 70px; display: inline-block; margin: 0; }
+
+.filter-bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; padding: 12px; background: #f7f9fc; border: 1px solid #e4e7eb; border-radius: 6px; margin-bottom: 12px; }
+.filter-bar label { margin-bottom: 0; font-size: .85rem; }
+.filter-bar input[type="text"], .filter-bar select { min-width: 160px; }
+.filter-bar label.checkbox { display: flex; align-items: center; gap: 6px; padding-bottom: 6px; }
+.filter-bar label.checkbox input { width: auto; margin: 0; }
+.filter-bar button { margin: 0; }
+td.het-hang { color: #c62828; font-size: .85rem; }

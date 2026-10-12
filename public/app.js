@@ -17,12 +17,32 @@ async function api(method, url, body) {
   return { status: res.status, data };
 }
 
+function thamSoLoc() {
+  const q = new URLSearchParams();
+  const tuKhoa = $('f-tukhoa').value.trim();
+  if (tuKhoa) q.set('tuKhoa', tuKhoa);
+  if ($('f-danhmuc').value !== 'tat-ca') q.set('danhMuc', $('f-danhmuc').value);
+  if ($('f-khoanggia').value) q.set('khoangGia', $('f-khoanggia').value);
+  if ($('f-sapxep').value) q.set('sapXep', $('f-sapxep').value);
+  if ($('f-conhang').checked) q.set('conHang', 'co');
+  const chuoi = q.toString();
+  return chuoi ? '?' + chuoi : '';
+}
+
 async function loadProducts() {
-  const { data } = await api('GET', '/api/products');
+  $('product-list').textContent = 'Đang tải...';
+  const { data } = await api('GET', '/api/products' + thamSoLoc());
+  if (!data.length) {
+    $('product-list').innerHTML = '<p data-testid="khong-co-ket-qua">Không tìm thấy sản phẩm phù hợp.</p>';
+    return;
+  }
   $('product-list').innerHTML =
-    '<table><tr><th>Sản phẩm</th><th>Giá</th><th>Số lượng</th><th></th></tr>' +
+    '<table><tr><th>Sản phẩm</th><th>Danh mục</th><th>Giá</th><th>Tồn kho</th><th>Số lượng</th><th></th></tr>' +
     data.map((p) =>
-      `<tr><td>${p.name}</td><td>${money(p.price)}</td>
+      `<tr data-testid="sp-${p.id}"><td>${p.name}</td>
+       <td>${p.category === 'qua-luu-niem' ? 'Quà lưu niệm' : 'Đồ dùng học tập'}</td>
+       <td>${money(p.price)}</td>
+       <td class="${p.stock === 0 ? 'het-hang' : ''}">${p.stock === 0 ? 'Hết hàng' : p.stock}</td>
        <td><input type="text" value="1" id="qty-${p.id}" data-testid="qty-${p.id}"></td>
        <td><button data-testid="add-${p.id}" onclick="addToCart(${p.id})">Thêm vào giỏ</button></td></tr>`
     ).join('') + '</table>';
@@ -103,6 +123,16 @@ $('btn-order').onclick = async () => {
   } else {
     showMsg($('fee-msg'), data.message, false);
   }
+};
+
+$('btn-loc').onclick = () => loadProducts();
+$('btn-xoabo-loc').onclick = () => {
+  $('f-tukhoa').value = '';
+  $('f-danhmuc').value = 'tat-ca';
+  $('f-khoanggia').value = '';
+  $('f-sapxep').value = '';
+  $('f-conhang').checked = false;
+  loadProducts();
 };
 
 loadProducts();
