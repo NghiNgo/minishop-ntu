@@ -1,0 +1,31 @@
+# Kiểm tra tự động mỗi khi sinh viên mở hoặc cập nhật Pull Request vào nhánh main
+name: Kiểm tra bài nộp
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  kiem-tra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Lấy mã nguồn (đầy đủ lịch sử để so sánh với main)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cài Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Cài thư viện
+        run: npm ci
+
+      - name: Kiểm tra quy định nộp bài
+        run: node scripts/kiem-tra-nop-bai.js
+        env:
+          NHANH: ${{ github.head_ref }}
+          NHANH_GOC: origin/${{ github.base_ref }}
