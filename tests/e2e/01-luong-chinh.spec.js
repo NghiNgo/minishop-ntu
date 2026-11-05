@@ -1,3 +1,4 @@
+
 /*
  * BUỔI 5 — PHẦN 1: Tự động hóa ca kiểm thử ưu tiên Cao
  *
@@ -19,7 +20,7 @@ test.beforeEach(async ({ page, request }) => {
 });
 
 // ---------------------------------------------------------------
-// CA MẪU ĐÃ VIẾT SẴN — đọc kỹ trước khi làm các TODO bên dưới.
+// CA MẪU ĐÃ VIẾT SẴN — ca mẫu tham khảo.
 // Tương ứng ca BVA của Buổi 2: đăng ký với tuổi dưới giới hạn.
 // ---------------------------------------------------------------
 test('FR-01.3 — đăng ký với tuổi 17 bị từ chối', async ({ page }) => {
@@ -33,46 +34,92 @@ test('FR-01.3 — đăng ký với tuổi 17 bị từ chối', async ({ page })
 });
 
 // ---------------------------------------------------------------
-// TODO (1): FR-02.3 — khóa tài khoản sau 3 lần đăng nhập sai liên tiếp
-//
-// Các bước:
-//   1. Đăng nhập sai mật khẩu 3 lần liên tiếp với tài khoản sv@ntu.edu.vn
-//   2. Khẳng định thông báo lần thứ ba nói rõ tài khoản bị khóa
-//
-// Lưu ý: mỗi lần bấm Đăng nhập là một yêu cầu mạng. Phải CHỜ thông báo của
-// lần trước hiện ra rồi mới bấm lần kế tiếp, nếu không các lần bấm chồng lên nhau.
-// Viết xong thì xóa .skip.
+// Đã hoàn thành: FR-02.3 — khóa tài khoản sau 3 lần đăng nhập sai liên tiếp
 // ---------------------------------------------------------------
-test.skip('TODO (1) — FR-02.3: khóa tài khoản sau 3 lần sai', async ({ page }) => {
-  expect(TK_THUONG.email).toBeTruthy();
+test('FR-02.3 — khóa tài khoản sau 3 lần sai', async ({ page }) => {
+  for (let i = 1; i <= 3; i++) {
+    await page.getByTestId('login-email').fill(TK_THUONG.email);
+    await page.getByTestId('login-password').fill('SaiMatKhau' + i);
+    await page.getByTestId('btn-login').click();
+
+    // Chờ thông báo của lần đăng nhập hiện tại trước khi gửi lần tiếp theo.
+    await expect(page.getByTestId('login-msg')).toBeVisible();
+
+    if (i < 3) {
+      await expect(page.getByTestId('login-msg')).toContainText(
+        'Sai email hoặc mật khẩu'
+      );
+    }
+  }
+
+  // Sau lần thứ ba, tài khoản phải bị khóa.
+  await expect(page.getByTestId('login-msg')).toContainText(/khóa|khoa/i);
 });
 
 // ---------------------------------------------------------------
-// TODO (2): FR-04.3 — thành viên VIP được miễn phí vận chuyển ở MỌI khu vực
-//
-// Các bước:
-//   1. Đăng nhập bằng tài khoản VIP
-//   2. Thêm một sản phẩm bất kỳ vào giỏ
-//   3. Chọn khu vực "Ngoại thành" rồi bấm Tính phí vận chuyển
-//   4. Khẳng định thông báo hiển thị phí vận chuyển 0đ
-//
-// Lưu ý: danh sách sản phẩm tải về có độ trễ ngẫu nhiên. Phải chờ bảng sản phẩm
-// hiện ra trước khi thao tác với ô số lượng.
+// Đã hoàn thành: FR-04.3 — VIP được miễn phí vận chuyển ở ngoại thành
 // ---------------------------------------------------------------
-test.skip('TODO (2) — FR-04.3: VIP miễn phí vận chuyển ở ngoại thành', async ({ page }) => {
-  expect(TK_VIP.email).toBeTruthy();
+test('FR-04.3 — VIP miễn phí vận chuyển ở ngoại thành', async ({ page }) => {
+  // Đăng nhập tài khoản VIP.
+  await page.getByTestId('login-email').fill(TK_VIP.email);
+  await page.getByTestId('login-password').fill(TK_VIP.matKhau);
+  await page.getByTestId('btn-login').click();
+
+  await expect(page.getByTestId('user-bar')).toBeVisible();
+
+  // Chờ danh sách sản phẩm tải xong.
+  const danhSach = page.getByTestId('product-list');
+  await expect(danhSach.locator('table')).toBeVisible();
+
+  // Thêm Áo thun NTU (mã 1) vào giỏ.
+  await page.getByTestId('qty-1').fill('1');
+  await page.getByTestId('add-1').click();
+
+  // Chọn Ngoại thành và tính phí vận chuyển.
+  await page.getByTestId('zone').selectOption('ngoai-thanh');
+  await page.getByTestId('btn-fee').click();
+
+  await expect(page.getByTestId('fee-msg')).toContainText(/0\s*đ/);
 });
 
 // ---------------------------------------------------------------
-// TODO (3): chọn MỘT ca ưu tiên Cao thuộc nhóm bảng quyết định trong bộ ca
-// Buổi 2 của mình (phí vận chuyển và tổng tiền), rồi tự động hóa ca đó.
-//
-// Ghi mã ca Buổi 2 tương ứng vào tên ca kiểm thử, ví dụ:
-//   test('TC-64130001-22 — FR-05.2: đơn 450.000đ nội thành', ...)
-//
-// Gợi ý: để kiểm tra TỔNG TIỀN cuối cùng, phải bấm nút Đặt hàng chứ không
-// dừng ở nút Tính phí vận chuyển.
+// Đã hoàn thành: TC-65130195-26 — FR-05.2
+// Thành viên thường, đơn 450.000đ, nội thành, phí 20.000đ.
+// Tổng thanh toán kỳ vọng: 470.000đ.
 // ---------------------------------------------------------------
-test.skip('TODO (3) — ca bảng quyết định tự chọn', async ({ page }) => {
-  expect(page).toBeTruthy();
+test('TC-65130195-26 — FR-05.2: đơn 450.000đ nội thành', async ({ page }) => {
+  // Đăng nhập tài khoản thành viên thường.
+  await page.getByTestId('login-email').fill(TK_THUONG.email);
+  await page.getByTestId('login-password').fill(TK_THUONG.matKhau);
+  await page.getByTestId('btn-login').click();
+
+  await expect(page.getByTestId('user-bar')).toBeVisible();
+
+  // Chờ danh sách sản phẩm tải xong.
+  const danhSach = page.getByTestId('product-list');
+  await expect(danhSach.locator('table')).toBeVisible();
+
+  // Áo thun NTU: 150.000đ × 1.
+  await page.getByTestId('qty-1').fill('1');
+  await page.getByTestId('add-1').click();
+
+  // Sổ tay sinh viên: 50.000đ × 6.
+  await page.getByTestId('qty-3').fill('6');
+  await page.getByTestId('add-3').click();
+
+  await page.getByTestId('zone').selectOption('noi-thanh');
+
+  // Kiểm tra phí vận chuyển trước khi đặt hàng.
+  await page.getByTestId('btn-fee').click();
+  await expect(page.getByTestId('fee-msg')).toContainText(/Phí vận chuyển: 20\.000đ/);
+  await expect(page.getByTestId('fee-msg')).toContainText(/Tổng: 470\.000đ/);
+
+  // Kiểm tra tổng tiền sau khi đặt hàng.
+  await page.getByTestId('btn-order').click();
+
+  await expect(page.getByTestId('fee-msg'))
+    .toContainText('Đặt hàng thành công');
+
+  await expect(page.getByTestId('fee-msg'))
+    .toContainText(/470\.000\s*đ/);
 });

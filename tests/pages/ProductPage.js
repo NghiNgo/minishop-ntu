@@ -1,18 +1,21 @@
 /*
  * Page Object cho màn hình Sản phẩm và bộ lọc (FR-06).
- *
- * TODO (4): hoàn thiện lớp này ở Phần 3.
- * Gợi ý các locator cần có (xem data-testid trong public/index.html):
- *   f-tukhoa · f-danhmuc · f-khoanggia · f-sapxep · f-conhang
- *   btn-loc · btn-xoabo-loc · product-list · khong-co-ket-qua
  */
 class ProductPage {
   constructor(page) {
     this.page = page;
     this.danhSach = page.getByTestId('product-list');
     this.nutLoc = page.getByTestId('btn-loc');
+    this.nutXoaBoLoc = page.getByTestId('btn-xoabo-loc');
     this.thongBaoRong = page.getByTestId('khong-co-ket-qua');
-    // TODO (4a): bổ sung các locator còn lại
+
+    this.oTuKhoa = page.getByTestId('f-tukhoa');
+    this.chonDanhMuc = page.getByTestId('f-danhmuc');
+    this.chonKhoangGia = page.getByTestId('f-khoanggia');
+    this.chonSapXep = page.getByTestId('f-sapxep');
+    this.chkConHang = page.getByTestId('f-conhang');
+
+    this.cacDongSanPham = this.danhSach.locator('tr[data-testid^="sp-"]');
   }
 
   async moTrang() {
@@ -20,52 +23,79 @@ class ProductPage {
     await this.chokKetQua();
   }
 
-  /**
-   * Chờ danh sách tải xong. Danh sách sản phẩm có độ trễ ngẫu nhiên, nên
-   * mọi thao tác với nó đều phải chờ qua phương thức này.
-   * ĐÃ VIẾT SẴN — dùng làm mẫu cho cách chờ đúng, không dùng waitForTimeout.
-   */
   async chokKetQua() {
-    await this.danhSach.locator('table, [data-testid="khong-co-ket-qua"]').first()
+    await this.danhSach
+      .locator('table, [data-testid="khong-co-ket-qua"]')
+      .first()
       .waitFor({ state: 'visible' });
   }
 
-  /**
-   * Áp dụng bộ lọc. Tham số là một đối tượng, chỉ truyền tiêu chí cần dùng:
-   *   await trangSP.loc({ danhMuc: 'qua-luu-niem', sapXep: 'gia-giam' });
-   */
   async loc({ tuKhoa, danhMuc, khoangGia, sapXep, conHang } = {}) {
-    // TODO (4b): điền từng tiêu chí nếu được truyền, sau đó bấm nút Lọc.
-    //   - Ô văn bản dùng .fill(), danh sách chọn dùng .selectOption()
-    //   - Ô đánh dấu dùng .check() hoặc .uncheck()
-    //   - Sau khi bấm Lọc, gọi this.chokKetQua() rồi mới trả về.
-    throw new Error('Chưa hoàn thành TODO (4b) trong ProductPage.loc()');
+    if (tuKhoa !== undefined) {
+      await this.oTuKhoa.fill(tuKhoa);
+    }
+
+    if (danhMuc !== undefined) {
+      await this.chonDanhMuc.selectOption(danhMuc);
+    }
+
+    if (khoangGia !== undefined) {
+      await this.chonKhoangGia.selectOption(khoangGia);
+    }
+
+    if (sapXep !== undefined) {
+      await this.chonSapXep.selectOption(sapXep);
+    }
+
+    if (conHang !== undefined) {
+      if (conHang) {
+        await this.chkConHang.check();
+      } else {
+        await this.chkConHang.uncheck();
+      }
+    }
+
+    await this.nutLoc.click();
+    await this.chokKetQua();
   }
 
-  /** Trả về mảng tên sản phẩm đang hiển thị, theo đúng thứ tự trên màn hình. */
+  async xoaBoLoc() {
+    await this.nutXoaBoLoc.click();
+    await this.chokKetQua();
+  }
+
   async danhSachTen() {
-    // TODO (4c)
-    //   Gợi ý: allTextContents() trả về mảng nội dung của mọi phần tử khớp locator.
-    //   Nhớ xử lý trường hợp danh sách rỗng (có thongBaoRong) thì trả về [].
-    throw new Error('Chưa hoàn thành TODO (4c) trong ProductPage.danhSachTen()');
+    if (await this.thongBaoRong.isVisible()) {
+      return [];
+    }
+
+    return this.cacDongSanPham.locator('td:nth-child(1)').allTextContents();
   }
 
-  /**
-   * Trả về mảng giá dạng SỐ, theo đúng thứ tự trên màn hình.
-   * Trên giao diện giá hiển thị dạng "150.000đ" nên phải bỏ dấu chấm và chữ đ.
-   */
   async danhSachGia() {
-    // TODO (4d)
-    throw new Error('Chưa hoàn thành TODO (4d) trong ProductPage.danhSachGia()');
+    if (await this.thongBaoRong.isVisible()) {
+      return [];
+    }
+
+    const giaHienThi = await this.cacDongSanPham
+      .locator('td:nth-child(3)')
+      .allTextContents();
+
+    return giaHienThi.map((gia) =>
+      Number(gia.replace(/[^\d]/g, ''))
+    );
   }
 
-  /** Trả về mảng nội dung cột Tồn kho, theo đúng thứ tự trên màn hình. */
   async danhSachTonKho() {
-    // TODO (4e)
-    throw new Error('Chưa hoàn thành TODO (4e) trong ProductPage.danhSachTonKho()');
+    if (await this.thongBaoRong.isVisible()) {
+      return [];
+    }
+
+    return this.cacDongSanPham
+      .locator('td:nth-child(4)')
+      .allTextContents();
   }
 
-  /** Thêm một sản phẩm vào giỏ theo mã sản phẩm. ĐÃ VIẾT SẴN. */
   async themVaoGio(maSanPham, soLuong) {
     await this.page.getByTestId(`qty-${maSanPham}`).fill(String(soLuong));
     await this.page.getByTestId(`add-${maSanPham}`).click();

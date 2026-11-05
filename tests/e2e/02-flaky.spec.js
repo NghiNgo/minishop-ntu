@@ -21,22 +21,23 @@ test.beforeEach(async ({ request }) => {
 // (xem GET /api/products trong src/server.js).
 // Ca này chờ cứng 600ms rồi mới kiểm tra, nên lúc xanh lúc đỏ.
 //
-// TODO (6a): sửa ca này để nó ổn định. KHÔNG dùng waitForTimeout.
+// Đã hoàn thành: sửa ca này để nó ổn định. KHÔNG dùng waitForTimeout.
 // ---------------------------------------------------------------
 test('danh sách sản phẩm hiển thị đủ 7 mặt hàng', async ({ page }) => {
   await page.goto('/');
-  await page.waitForTimeout(600); // ← nguyên nhân gây flaky
-  const soDong = await page.getByTestId('product-list').locator('tr').count();
-  expect(soDong).toBe(8); // 7 sản phẩm + 1 dòng tiêu đề
-});
 
+  const bangSanPham = page.getByTestId('product-list').locator('table');
+  await expect(bangSanPham).toBeVisible();
+
+  await expect(page.getByTestId('product-list').locator('tr[data-testid^="sp-"]')).toHaveCount(7);
+});
 // ---------------------------------------------------------------
 // CA FLAKY SỐ 2 — ĐÃ CHO SẴN, PHẢI SỬA
 //
 // Ca này đọc nội dung thông báo NGAY sau khi bấm nút, trong khi thông báo
 // chỉ xuất hiện sau khi máy chủ phản hồi.
 //
-// TODO (6b): sửa ca này bằng web-first assertion.
+// Đã hoàn thành: sửa ca này bằng web-first assertion.
 // ---------------------------------------------------------------
 test('tính phí vận chuyển cho thành viên thường', async ({ page }) => {
   await page.goto('/');
@@ -51,6 +52,5 @@ test('tính phí vận chuyển cho thành viên thường', async ({ page }) =>
   await page.getByTestId('zone').selectOption('noi-thanh');
   await page.getByTestId('btn-fee').click();
 
-  const thongBao = await page.getByTestId('fee-msg').textContent(); // ← đọc quá sớm
-  expect(thongBao).toContain('Phí vận chuyển');
+  await expect(page.getByTestId('fee-msg')).toContainText('Phí vận chuyển');
 });
